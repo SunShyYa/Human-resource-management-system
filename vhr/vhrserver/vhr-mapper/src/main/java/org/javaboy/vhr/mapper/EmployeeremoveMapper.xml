@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.javaboy.vhr.mapper.EmployeeremoveMapper" >
+  <resultMap id="BaseResultMap" type="org.javaboy.vhr.model.Employeeremove" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="eid" property="eid" jdbcType="INTEGER" />
+    <result column="beforeDepId" property="beforedepid" jdbcType="INTEGER"/>
+    <result column="afterDepId" property="afterdepid" jdbcType="INTEGER" />
+    <result column="beforeJobId" property="beforejobid" jdbcType="INTEGER"/>
+    <result column="afterJobId" property="afterjobid" jdbcType="INTEGER" />
+    <result column="beforeDepName" property="beforedepname" jdbcType="INTEGER"/>
+    <result column="afterDepName" property="afterdepname" jdbcType="INTEGER" />
+    <result column="beforeJobName" property="beforejobname" jdbcType="INTEGER"/>
+    <result column="afterJobName" property="afterjobname" jdbcType="INTEGER" />
+    <result column="removeDate" property="removedate" jdbcType="DATE" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, eid, afterDepId, afterJobId, removeDate, reason, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from employeeremove
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <resultMap id="RemoveMap" type="org.javaboy.vhr.model.Employeeremove" extends="BaseResultMap">
+    <association property="employee" javaType="org.javaboy.vhr.model.Employee">
+      <id column="eid" property="id" jdbcType="INTEGER"></id>
+      <result column="ename" property="name" jdbcType="VARCHAR"></result>
+      <result column="eworkID" property="workID" jdbcType="VARCHAR"></result>
+    </association>
+
+  </resultMap>
+    <select id="getEmployeeRemoveByPage" resultMap="RemoveMap">
+        select er.*
+               , e.`id` as eid, e.`name` as ename, e.`workID` as eworkID,
+               d1.`id` as beforeDepId, d1.`name` as beforeDepName, d2.`id` as afterDepId, d2.`name` as afterDepName,
+               p1.`id` as beforeJobId, p1.`name` as beforeJobName, p2.`id` as afterJobId, p2.`name` as afterJobName
+
+        from employeeremove er
+            left join employee e on er.`eid` = e.`id`
+        left join department d1 on er.`beforeDepId` = d1.`id`
+        left join department d2 on er.`afterDepId` = d2.`id`
+        left join position p1 on er.`beforeJobId` = p1.`id`
+        left join position p2 on er.`afterJobId` = p2.`id`
+
+        order by er.id
+        <if test="page != null and size != null">
+          limit #{page}, #{size}
+        </if>
+    </select>
+  <select id="getTotal" resultType="java.lang.Long">
+    select count(*) from employeeremove
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from employeeremove
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.javaboy.vhr.model.Employeeremove" >
+    insert into employeeremove (id, eid, afterDepId, 
+      afterJobId, removeDate, reason, 
+      remark)
+    values (#{id,jdbcType=INTEGER}, #{eid,jdbcType=INTEGER}, #{afterdepid,jdbcType=INTEGER}, 
+      #{afterjobid,jdbcType=INTEGER}, #{removedate,jdbcType=DATE}, #{reason,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.javaboy.vhr.model.Employeeremove" >
+    insert into employeeremove
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="eid != null" >
+        eid,
+      </if>
+
+        <if test="beforedepid != null">
+          beforeDepId,
+        </if>
+
+      <if test="afterdepid != null" >
+        afterDepId,
+      </if>
+
+        <if test="beforejobid != null">
+          beforeJobId,
+        </if>
+
+      <if test="afterjobid != null" >
+        afterJobId,
+      </if>
+      <if test="removedate != null" >
+        removeDate,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="eid != null" >
+        #{eid,jdbcType=INTEGER},
+      </if>
+      <if test="beforedepid != null">
+        #{beforedepid,jdbcType=INTEGER},
+      </if>
+
+      <if test="afterdepid != null" >
+        #{afterdepid,jdbcType=INTEGER},
+      </if>
+
+      <if test="beforejobid != null">
+        #{beforejobid,jdbcType=INTEGER},
+      </if>
+
+
+      <if test="afterjobid != null" >
+        #{afterjobid,jdbcType=INTEGER},
+      </if>
+      <if test="removedate != null" >
+        #{removedate,jdbcType=DATE},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.javaboy.vhr.model.Employeeremove" >
+    update employeeremove
+    <set >
+      <if test="eid != null" >
+        eid = #{eid,jdbcType=INTEGER},
+      </if>
+      <if test="afterdepid != null" >
+        afterDepId = #{afterdepid,jdbcType=INTEGER},
+      </if>
+      <if test="afterjobid != null" >
+        afterJobId = #{afterjobid,jdbcType=INTEGER},
+      </if>
+      <if test="removedate != null" >
+        removeDate = #{removedate,jdbcType=DATE},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.javaboy.vhr.model.Employeeremove" >
+    update employeeremove
+    set eid = #{eid,jdbcType=INTEGER},
+      afterDepId = #{afterdepid,jdbcType=INTEGER},
+      afterJobId = #{afterjobid,jdbcType=INTEGER},
+      removeDate = #{removedate,jdbcType=DATE},
+      reason = #{reason,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

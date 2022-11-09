@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: sunshy
+    url: jdbc:mysql://localhost:3306/vhr?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    publisher-returns: true
+
+  redis:
+    host: 127.0.0.1
+    database: 0
+    port: 6379
+    password: 123456
+  cache:
+    cache-names: menus_cache
+
+  mail:
+    host: smtp.qq.com
+    port: 465
+    password: ypcxrepmufmsddgh
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+        debug: true
+    username: 2932722310@qq.com
+
+server:
+  port: 8081
+  compression:
+    enabled: true
+#fastdfs:
+  #nginx:
+   # host: http://192.168.91.128/
