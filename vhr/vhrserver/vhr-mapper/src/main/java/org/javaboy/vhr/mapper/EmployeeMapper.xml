@@ -30,6 +30,7 @@
         <result column="beginContract" property="beginContract" jdbcType="DATE"/>
         <result column="endContract" property="endContract" jdbcType="DATE"/>
         <result column="workAge" property="workAge" jdbcType="INTEGER"/>
+        <result column="isDeleted" property="isDeleted" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap id="AllEmployeeInfo" type="org.javaboy.vhr.model.Employee" extends="BaseResultMap">
         <association property="nation" javaType="org.javaboy.vhr.model.Nation">
@@ -110,6 +111,7 @@
         dname,j.`id` as jid,j.`name` as jname,pos.`id` as posid,pos.`name` as posname from employee e,nation
         n,politicsstatus p,department d,joblevel j,position pos where e.`nationId`=n.`id` and e.`politicId`=p.`id` and
         e.`departmentId`=d.`id` and e.`jobLevelId`=j.`id` and e.`posId`=pos.`id`
+        and e.isDeleted = 0
         <if test="emp.name !=null and emp.name!=''">
             and e.name like concat('%',#{emp.name},'%')
         </if>
@@ -134,9 +136,11 @@
         <if test="beginDateScope !=null">
             and e.beginDate between #{beginDateScope[0]} and #{beginDateScope[1]}
         </if>
+        order by e.id
         <if test="page !=null and size!=null">
             limit #{page},#{size}
         </if>
+
     </select>
     <select id="getTotal" resultType="java.lang.Long">
         select count(*) from employee e
@@ -167,6 +171,8 @@
             <if test="beginDateScope !=null">
                 and e.beginDate between #{beginDateScope[0]} and #{beginDateScope[1]}
             </if>
+            and e.isDeleted = 0
+
         </where>
     </select>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -176,7 +182,8 @@
         where id = #{id,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from employee
+    update employee e
+    set e.isDeleted = 1
     where id = #{id,jdbcType=INTEGER}
   </delete>
     <insert id="addEmps">

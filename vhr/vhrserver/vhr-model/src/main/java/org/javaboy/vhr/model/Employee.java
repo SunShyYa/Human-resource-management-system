@@ -93,6 +93,9 @@ public class Employee implements Serializable {
 
     private Double contractTerm;
 
+    private Integer isDeleted;
+
+
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "Asia/Shanghai")
     private Date conversionTime;
 
@@ -270,6 +273,14 @@ public class Employee implements Serializable {
 
     public void setJobLevelId(Integer jobLevelId) {
         this.jobLevelId = jobLevelId;
+    }
+
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public Integer getPosId() {
